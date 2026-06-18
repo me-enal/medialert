@@ -178,40 +178,52 @@ with st.sidebar:
 st.markdown("""
     <div style="
         background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
-        border-radius: 14px;
-        padding: 28px 32px;
-        margin-bottom: 24px;
+        border-radius: 16px;
+        padding: 32px 36px;
+        margin-bottom: 28px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 4px 15px rgba(230,57,70,0.3);
+        box-shadow: 0 6px 20px rgba(230,57,70,0.35);
     ">
         <div>
-            <div style="font-size:42px;font-weight:800;color:#ffffff;letter-spacing:-1px;line-height:1">
-                🚨 MediAlert
-            </div>
-            <div style="font-size:15px;color:rgba(255,255,255,0.85);margin-top:6px">
-                Real-time hospital resource finder for emergency patients
-            </div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:4px">
-                📍 Showing hospitals near Ludhiana, Punjab
-            </div>
+            <div style="
+                font-size: 46px;
+                font-weight: 800;
+                color: #ffffff;
+                letter-spacing: -2px;
+                line-height: 1;
+            ">🚨 MediAlert</div>
+            <div style="
+                font-size: 16px;
+                color: rgba(255,255,255,0.9);
+                margin-top: 8px;
+                font-weight: 500;
+            ">Real-time hospital resource finder for emergency patients</div>
+            <div style="
+                font-size: 13px;
+                color: rgba(255,255,255,0.7);
+                margin-top: 5px;
+            ">📍 Showing hospitals near Ludhiana, Punjab</div>
         </div>
         <div style="text-align:right">
             <a href="tel:108" style="
-                background:#ffffff;
-                color:#e63946;
-                padding:12px 28px;
-                border-radius:50px;
-                font-size:16px;
-                font-weight:700;
-                text-decoration:none;
-                display:inline-block;
-                box-shadow:0 2px 8px rgba(0,0,0,0.15);
+                background: #ffffff;
+                color: #e63946;
+                padding: 14px 32px;
+                border-radius: 50px;
+                font-size: 17px;
+                font-weight: 800;
+                text-decoration: none;
+                display: inline-block;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                letter-spacing: 0.5px;
             ">🆘 SOS — Call 108</a>
-            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:8px">
-                National Emergency Ambulance
-            </div>
+            <div style="
+                font-size: 12px;
+                color: rgba(255,255,255,0.6);
+                margin-top: 8px;
+            ">National Emergency Ambulance</div>
         </div>
     </div>
 """, unsafe_allow_html=True)

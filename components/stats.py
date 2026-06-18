@@ -23,28 +23,28 @@ def show_stats(hospitals):
             box-shadow:0 2px 8px rgba(0,0,0,0.05);
         ">
             <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
-                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🛏️ Total Beds Free</div>
-                <div style="font-size:32px;font-weight:700;color:#2ecc71">{total_beds}</div>
+                <div style="font-size:13px;color:#343a40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">🛏️ Total Beds Free</div>
+                <div style="font-size:36px;font-weight:800;color:#2ecc71">{total_beds}</div>
                 <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
             </div>
             <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
-                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🏥 ICU Beds Free</div>
-                <div style="font-size:32px;font-weight:700;color:#3498db">{total_icu}</div>
+                <div style="font-size:13px;color:#343a40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">🏥 ICU Beds Free</div>
+                <div style="font-size:36px;font-weight:800;color:#3498db">{total_icu}</div>
                 <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
             </div>
             <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
-                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🫁 Oxygen Cylinders</div>
-                <div style="font-size:32px;font-weight:700;color:#9b59b6">{total_oxygen}</div>
+               <div style="font-size:13px;color:#343a40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">🫁 Oxygen Cylinders</div>
+                <div style="font-size:36px;font-weight:800;color:#9b59b6">{total_oxygen}</div>
                 <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
             </div>
             <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
-                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">👨‍⚕️ Doctors On Duty</div>
-                <div style="font-size:32px;font-weight:700;color:#e67e22">{total_doctors}</div>
+               <div style="font-size:13px;color:#343a40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">👨‍⚕️ Doctors On Duty</div>
+                <div style="font-size:36px;font-weight:800;color:#e67e22">{total_doctors}</div>
                 <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
             </div>
             <div style="padding:16px 20px;text-align:center;">
-                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🏥 Hospitals</div>
-                <div style="font-size:32px;font-weight:700;color:#e63946">{total_hospitals}</div>
+                <div style="font-size:13px;color:#343a40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">🏥 Hospitals</div>
+                <div style="font-size:36px;font-weight:800;color:#e63946">{total_hospitals}</div>
                 <div style="font-size:11px;color:#adb5bd;margin-top:4px">{open_24h} open 24h</div>
             </div>
         </div>
