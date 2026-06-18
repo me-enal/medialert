@@ -2,58 +2,50 @@ import streamlit as st
 import pandas as pd
 
 def show_stats(hospitals):
-    """
-    Concept: Pandas — converting a list of dictionaries
-    into a DataFrame lets us do math on columns easily
-    """
-
-    # Concept: pd.DataFrame — creates a table from list of dicts
     df = pd.DataFrame(hospitals)
 
-    st.markdown("### 📊 Live Resource Summary")
+    total_beds = int(df['beds_available'].sum())
+    total_icu = int(df['icu_available'].sum())
+    total_oxygen = int(df['oxygen_cylinders'].sum())
+    total_doctors = int(df['doctors_on_duty'].sum())
+    total_hospitals = len(hospitals)
+    open_24h = len([h for h in hospitals if h['open_24h']])
 
-    # Concept: st.columns — 5 equal columns side by side
-    c1, c2, c3, c4, c5 = st.columns(5)
-
-    with c1:
-        total_beds = int(df['beds_available'].sum())
-        st.metric(
-            label="🛏️ Total Beds Free",
-            value=total_beds,
-            delta="across all hospitals"
-        )
-
-    with c2:
-        total_icu = int(df['icu_available'].sum())
-        st.metric(
-            label="🏥 ICU Beds Free",
-            value=total_icu,
-            delta="across all hospitals"
-        )
-
-    with c3:
-        total_oxygen = int(df['oxygen_cylinders'].sum())
-        st.metric(
-            label="🫁 Oxygen Cylinders",
-            value=total_oxygen,
-            delta="across all hospitals"
-        )
-
-    with c4:
-        total_doctors = int(df['doctors_on_duty'].sum())
-        st.metric(
-            label="👨‍⚕️ Doctors On Duty",
-            value=total_doctors,
-            delta="across all hospitals"
-        )
-
-    with c5:
-        total_hospitals = len(hospitals)
-        open_24h = len([h for h in hospitals if h['open_24h']])
-        st.metric(
-            label="🏥 Hospitals",
-            value=total_hospitals,
-            delta=f"{open_24h} open 24h"
-        )
-
-    st.markdown("---")
+    st.markdown(f"""
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            border:1px solid #e9ecef;
+            border-radius:10px;
+            overflow:hidden;
+            margin-bottom:20px;
+            background:#ffffff;
+            box-shadow:0 2px 8px rgba(0,0,0,0.05);
+        ">
+            <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
+                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🛏️ Total Beds Free</div>
+                <div style="font-size:32px;font-weight:700;color:#2ecc71">{total_beds}</div>
+                <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
+            </div>
+            <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
+                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🏥 ICU Beds Free</div>
+                <div style="font-size:32px;font-weight:700;color:#3498db">{total_icu}</div>
+                <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
+            </div>
+            <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
+                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🫁 Oxygen Cylinders</div>
+                <div style="font-size:32px;font-weight:700;color:#9b59b6">{total_oxygen}</div>
+                <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
+            </div>
+            <div style="padding:16px 20px;text-align:center;border-right:1px solid #e9ecef">
+                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">👨‍⚕️ Doctors On Duty</div>
+                <div style="font-size:32px;font-weight:700;color:#e67e22">{total_doctors}</div>
+                <div style="font-size:11px;color:#adb5bd;margin-top:4px">across all hospitals</div>
+            </div>
+            <div style="padding:16px 20px;text-align:center;">
+                <div style="font-size:13px;color:#6c757d;font-weight:500;margin-bottom:6px">🏥 Hospitals</div>
+                <div style="font-size:32px;font-weight:700;color:#e63946">{total_hospitals}</div>
+                <div style="font-size:11px;color:#adb5bd;margin-top:4px">{open_24h} open 24h</div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)

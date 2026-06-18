@@ -24,7 +24,7 @@ def show_update_panel(hospitals):
         with st.form("login_form"):
             username = st.text_input("Username")
             password = st.text_input("Password", type="password")
-            login_btn = st.form_submit_button("🔑 Login", use_container_width=True)
+            login_btn = st.form_submit_button("🔑 Login", use_container_width=True, type="primary")
             
             if login_btn:
                 # Concept: Simple auth check

@@ -1,16 +1,14 @@
 import streamlit as st
 import pandas as pd
 from data.save_data import load_hospitals
-hospitals = load_hospitals()
 from components.cards import show_hospital_card
 from components.map_view import show_map
 from components.stats import show_stats
-from components.update_panel import show_update_panel
 from components.ai_recommender import show_ai_recommender
+from components.update_panel import show_update_panel
 
 # ─────────────────────────────────────────
-# Concept: st.set_page_config — must be the
-# FIRST streamlit command in any app
+# PAGE CONFIG
 # ─────────────────────────────────────────
 st.set_page_config(
     page_title="MediAlert",
@@ -19,98 +17,119 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────
-# Concept: Custom CSS — we can inject CSS
-# into Streamlit using st.markdown
+# MINIMAL CSS
 # ─────────────────────────────────────────
 st.markdown("""
     <style>
-        .main { background-color: #f8f9fa; }
-        .sos-button {
-            background-color: #ff4444;
-            color: white;
-            font-size: 24px;
-            padding: 15px 40px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            animation: pulse 1.5s infinite;
+        /* Base */
+        .main { background-color: #f5f6fa; }
+        .stApp { background-color: #f5f6fa; }
+        [data-testid="stAppViewContainer"] { background-color: #f5f6fa; }
+        [data-testid="stHeader"] { background-color: #ffffff; border-bottom: 1px solid #e9ecef; }
+        #MainMenu { visibility: hidden; }
+        footer { visibility: hidden; }
+
+        /* Sidebar */
+        section[data-testid="stSidebar"] {
+            background-color: #ffffff;
+            border-right: 1px solid #e9ecef;
         }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255,68,68,0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255,68,68,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+
+        /* All text dark */
+        .stApp p { color: #212529; }
+        .stApp label { color: #343a40; }
+        .stApp h1, .stApp h2,
+        .stApp h3, .stApp h4 { color: #212529; }
+        .stCheckbox label { color: #343a40 !important; }
+        .stSelectbox label { color: #343a40 !important; }
+        .stSlider label { color: #343a40 !important; }
+        .stTabs [data-baseweb="tab"] { color: #343a40; font-size:14px; }
+
+        /* Fix all buttons to light */
+        .stLinkButton a {
+            background-color: #ffffff !important;
+            color: #343a40 !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 8px !important;
+            font-size: 13px !important;
         }
-        .header-box {
-            background: linear-gradient(135deg, #c0392b, #e74c3c);
-            padding: 20px;
-            border-radius: 12px;
-            color: white;
-            margin-bottom: 20px;
+        .stLinkButton a:hover {
+            background-color: #f8f9fa !important;
+            border-color: #adb5bd !important;
+        }
+        .stButton > button {
+            background-color: #ffffff !important;
+            color: #343a40 !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 8px !important;
+            font-size: 13px !important;
+        }
+        .stButton > button:hover {
+            background-color: #f8f9fa !important;
+            border-color: #adb5bd !important;
+        }
+
+        /* Primary button stays red */
+        .stLinkButton a[kind="primary"],
+        [data-testid="stLinkButtonContainer"] a {
+            background-color: #ffffff !important;
+        }
+
+        /* Metric containers */
+        div[data-testid="metric-container"] {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 14px;
+        }
+        div[data-testid="metric-container"] p { color: #343a40; }
+        div[data-testid="metric-container"] label { color: #6c757d; }
+
+        /* Form inputs */
+        .stTextInput input {
+            background: #ffffff !important;
+            color: #212529 !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 8px !important;
+        }
+        .stSelectbox div {
+            color: #212529 !important;
+        }
+
+        /* Expander */
+        .streamlit-expanderHeader {
+            background: #ffffff !important;
+            color: #343a40 !important;
+            border: 1px solid #e9ecef !important;
+            border-radius: 8px !important;
+        }
+
+        /* Tab active */
+        .stTabs [aria-selected="true"] {
+            color: #e63946 !important;
+            border-bottom: 2px solid #e63946 !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────
-# Concept: Session State initialization
-# Session state persists data between 
-# user interactions without resetting
-# ─────────────────────────────────────────
-if 'selected_hospital' not in st.session_state:
-    st.session_state['selected_hospital'] = None
 
 # ─────────────────────────────────────────
-# HEADER SECTION
+# LOAD DATA
 # ─────────────────────────────────────────
-st.markdown("""
-    <div class="header-box">
-        <h1>🚨 MediAlert</h1>
-        <p>Real-time hospital resource finder for emergency patients</p>
-        <p>📍 Showing hospitals near Ludhiana, Punjab</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# SOS Button
-col_sos, col_info = st.columns([1, 3])
-with col_sos:
-    st.markdown("""
-        <a href="tel:108">
-            <button class="sos-button">🆘 SOS — Call 108</button>
-        </a>
-    """, unsafe_allow_html=True)
-with col_info:
-    st.info("💡 **Tip:** Use filters below to find hospitals with specific resources. Green = Available, Yellow = Low, Red = Critical.")
-
-st.markdown("---")
+hospitals = load_hospitals()
 
 # ─────────────────────────────────────────
-# FILTERS SECTION
-# Concept: Streamlit widgets — interactive
-# UI elements that return values we use
-# to filter data
+# SIDEBAR
 # ─────────────────────────────────────────
-# MAP SECTION
-# AI RECOMMENDER
-show_ai_recommender(hospitals)
-st.markdown("---")
-# STATS DASHBOARD
-show_stats(hospitals)
-st.markdown("### 🗺️ Hospitals Near You")
-show_map(hospitals)
-st.markdown("---")
-st.markdown("### 🔍 Filter Hospitals")
+with st.sidebar:
+    st.markdown("## 🔍 Filters")
+    st.markdown("---")
 
-# Concept: st.columns — side by side layout
-f1, f2, f3, f4 = st.columns(4)
-
-with f1:
-    # Concept: selectbox — dropdown widget
     filter_type = st.selectbox(
         "🏥 Hospital Type",
         ["All", "Government", "Private"]
     )
 
-with f2:
-    # Concept: slider — range input widget
     filter_distance = st.slider(
         "📏 Max Distance (km)",
         min_value=1,
@@ -118,108 +137,161 @@ with f2:
         value=15
     )
 
-with f3:
-    # Concept: checkbox — boolean toggle widget
+    st.markdown("### ✅ Must Have")
     filter_beds = st.checkbox("🛏️ Beds Available")
     filter_icu = st.checkbox("🏥 ICU Available")
-
-with f4:
     filter_oxygen = st.checkbox("🫁 Oxygen Available")
     filter_24h = st.checkbox("⏰ Open 24 Hours")
 
-# Blood type filter
-st.markdown("**🩸 Filter by Blood Type:**")
-blood_cols = st.columns(8)
-blood_types = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]
-# Concept: Dictionary — storing checkbox values by blood type
-blood_filters = {}
-for i, bt in enumerate(blood_types):
-    with blood_cols[i]:
-        blood_filters[bt] = st.checkbox(bt, key=f"blood_{bt}")
+    st.markdown("### 🩸 Blood Type Needed")
+    blood_types = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]
+    blood_filters = {}
+    b1, b2 = st.columns(2)
+    for i, bt in enumerate(blood_types):
+        if i % 2 == 0:
+            with b1:
+                blood_filters[bt] = st.checkbox(bt, key=f"blood_{bt}")
+        else:
+            with b2:
+                blood_filters[bt] = st.checkbox(bt, key=f"blood_{bt}")
+
+    st.markdown("### ℹ️ Legend")
+    st.markdown("""
+        <p style="color:#212529">🟢 Good &nbsp;&nbsp; 🟡 Low &nbsp;&nbsp; 🔴 Critical</p>
+    """, unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("""
+        <p style="color:#6c757d; font-size:13px">
+            Data updated by hospital staff every 30 mins
+        </p>
+        <p style="color:#6c757d; font-size:13px">
+            🚨 Emergency? Always call <b>108</b> first
+        </p>
+    """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────
+# MAIN HEADER
+# ─────────────────────────────────────────
+# ─────────────────────────────────────────
+# MAIN HEADER
+# ─────────────────────────────────────────
+st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+        border-radius: 14px;
+        padding: 28px 32px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(230,57,70,0.3);
+    ">
+        <div>
+            <div style="font-size:42px;font-weight:800;color:#ffffff;letter-spacing:-1px;line-height:1">
+                🚨 MediAlert
+            </div>
+            <div style="font-size:15px;color:rgba(255,255,255,0.85);margin-top:6px">
+                Real-time hospital resource finder for emergency patients
+            </div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:4px">
+                📍 Showing hospitals near Ludhiana, Punjab
+            </div>
+        </div>
+        <div style="text-align:right">
+            <a href="tel:108" style="
+                background:#ffffff;
+                color:#e63946;
+                padding:12px 28px;
+                border-radius:50px;
+                font-size:16px;
+                font-weight:700;
+                text-decoration:none;
+                display:inline-block;
+                box-shadow:0 2px 8px rgba(0,0,0,0.15);
+            ">🆘 SOS — Call 108</a>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:8px">
+                National Emergency Ambulance
+            </div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 st.markdown("---")
 
 # ─────────────────────────────────────────
+# STATS ROW
+# ─────────────────────────────────────────
+show_stats(hospitals)
+
+# ─────────────────────────────────────────
+# TABS
+# ─────────────────────────────────────────
+tab1, tab2, tab3, tab4 = st.tabs([
+    "🏥 Hospitals",
+    "🤖 AI Recommender",
+    "🗺️ Map",
+    "🔄 Update Panel"
+])
+
+# ─────────────────────────────────────────
 # FILTERING LOGIC
-# Concept: List filtering — we loop through
-# hospitals and keep only those that match
-# all selected filters
 # ─────────────────────────────────────────
 filtered_hospitals = []
-
 for hospital in hospitals:
-    
-    # Filter by type
     if filter_type != "All" and hospital['type'] != filter_type:
         continue
-    
-    # Filter by distance
     if hospital['distance'] > filter_distance:
         continue
-    
-    # Filter by beds
     if filter_beds and hospital['beds_available'] == 0:
         continue
-    
-    # Filter by ICU
     if filter_icu and hospital['icu_available'] == 0:
         continue
-    
-    # Filter by oxygen
     if filter_oxygen and hospital['oxygen_cylinders'] == 0:
         continue
-    
-    # Filter by 24h
     if filter_24h and not hospital['open_24h']:
         continue
-    
-    # Filter by blood type
-    # Concept: any() — returns True if at least one item in a list is True
     selected_blood = [bt for bt, checked in blood_filters.items() if checked]
     if selected_blood:
-        has_blood = any(hospital['blood_bank'].get(bt, False) for bt in selected_blood)
+        has_blood = any(
+            hospital['blood_bank'].get(bt, False)
+            for bt in selected_blood
+        )
         if not has_blood:
             continue
-    
     filtered_hospitals.append(hospital)
 
-# ─────────────────────────────────────────
-# RESULTS SUMMARY
-# Concept: f-string — embedding variables
-# inside strings using {}
-# ─────────────────────────────────────────
-st.markdown(f"### 🏥 Found {len(filtered_hospitals)} hospital(s)")
-
-# Sort by distance
-# Concept: sorted() with lambda — sorts list
-# by a specific key inside each dictionary
 filtered_hospitals = sorted(
     filtered_hospitals,
     key=lambda x: x['distance']
 )
 
 # ─────────────────────────────────────────
-# DISPLAY HOSPITAL CARDS
-# Concept: Loop — call show_hospital_card()
-# for each hospital in filtered list
+# TAB 1 — HOSPITALS
 # ─────────────────────────────────────────
-if len(filtered_hospitals) == 0:
-    st.warning("⚠️ No hospitals found matching your filters. Try relaxing the filters.")
-else:
-    for hospital in filtered_hospitals:
-        show_hospital_card(hospital)
+with tab1:
+    st.markdown(f"#### Found {len(filtered_hospitals)} hospital(s) near you")
+    if len(filtered_hospitals) == 0:
+        st.warning("No hospitals match your filters. Try adjusting the sidebar filters.")
+    else:
+        for hospital in filtered_hospitals:
+            show_hospital_card(hospital)
 
 # ─────────────────────────────────────────
-# FOOTER
+# TAB 2 — AI RECOMMENDER
 # ─────────────────────────────────────────
-# UPDATE PANEL
-st.markdown("---")
-with st.expander("🔄 Hospital Staff — Update Your Data"):
+with tab2:
+    show_ai_recommender(hospitals)
+
+# ─────────────────────────────────────────
+# TAB 3 — MAP
+# ─────────────────────────────────────────
+with tab3:
+    st.markdown("#### 🗺️ Hospitals Near You")
+    st.caption("Green = beds available · Orange = low · Red = full")
+    show_map(filtered_hospitals)
+
+# ─────────────────────────────────────────
+# TAB 4 — UPDATE PANEL
+# ─────────────────────────────────────────
+with tab4:
     show_update_panel(hospitals)
-st.markdown("---")
-st.markdown("""
-    <div style='text-align:center; color:gray; font-size:13px'>
-        🚨 MediAlert — In a real emergency always call <b>108</b> first<br>
-        Data is updated by hospital staff every 30 minutes
-    </div>
-""", unsafe_allow_html=True)
